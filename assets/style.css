@@ -262,6 +262,7 @@ select.status { font: inherit; font-size: 12.5px; padding: 3px 6px; border-radiu
 .edit [contenteditable="true"]:focus { outline: 2px solid var(--team); background: var(--edit-bg); }
 .edit [contenteditable="true"]:empty::before { content: attr(data-ph); color: #b3b3b3; }
 .edit .tbl td { min-width: 40px; }
+.update-banner { background: #dbeafe; color: #1e3a8a; font-size: 13px; padding: 8px 24px; text-align: center; border-bottom: 1px solid #bfdbfe; display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; }
 .edit-banner { background: #fef3c7; color: #92400e; font-size: 13px; padding: 8px 24px; text-align: center; border-bottom: 1px solid #fde68a; }
 .edit-banner b { font-weight: 800; }
 

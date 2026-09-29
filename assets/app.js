@@ -18,6 +18,8 @@
     edit: false,
     unlocked: false,
     fromLocal: false,
+    remoteNewer: false,
+    fileText: null,
     saveTimer: null,
   };
 
@@ -107,11 +109,13 @@
   }
 
   // ---------- data loading ----------
-  async function fetchJson(path) {
-    const r = await fetch(path, { cache: 'no-cache' });
+  async function fetchText(path) {
+    const r = await fetch(path, { cache: 'no-store' });
     if (!r.ok) throw new Error(`${path} 로드 실패 (${r.status})`);
-    return r.json();
+    return r.text();
   }
+  async function fetchJson(path) { return JSON.parse(await fetchText(path)); }
+  const BASE = 'okr:base:'; // 브라우저 수정본을 만들 당시의 원본 파일 스냅샷
   function materialize(tpl, id) {
     const m = periodMeta(id);
     const s = JSON.stringify(tpl).replaceAll('__ID__', id).replaceAll('__LABEL__', m.label).replaceAll('__TITLE__', m.title);
@@ -120,20 +124,37 @@
     return p;
   }
   async function loadPeriod(id) {
+    const entry = state.index.periods.find((p) => p.id === id);
     const local = localStorage.getItem(STORE + id);
+    state.remoteNewer = false;
+    state.fileText = null;
     if (local) {
-      try { state.fromLocal = true; return JSON.parse(local); } catch (_) { localStorage.removeItem(STORE + id); }
+      try {
+        const data = JSON.parse(local);
+        state.fromLocal = true;
+        // 레포 원본이 수정본 생성 이후 갱신되었는지 확인 (배포 반영 안 되는 것처럼 보이는 문제 방지)
+        if (entry) {
+          try {
+            const text = await fetchText('data/' + entry.file);
+            state.fileText = text;
+            const base = localStorage.getItem(BASE + id);
+            state.remoteNewer = base ? base !== text : text !== local;
+          } catch (_) { /* 오프라인 등: 무시 */ }
+        }
+        return data;
+      } catch (_) { localStorage.removeItem(STORE + id); localStorage.removeItem(BASE + id); }
     }
     state.fromLocal = false;
-    const entry = state.index.periods.find((p) => p.id === id);
-    if (entry) return fetchJson('data/' + entry.file);
+    if (entry) { const text = await fetchText('data/' + entry.file); state.fileText = text; return JSON.parse(text); }
     const m = periodMeta(id);
     const tpl = await fetchJson(m.type === 'quarter' ? 'data/template-quarter.json' : 'data/template-month.json');
     return materialize(tpl, id);
   }
+  function discardLocal(id) { localStorage.removeItem(STORE + id); localStorage.removeItem(BASE + id); }
 
   function save() {
     if (!state.period || !state.periodId) return;
+    if (!localStorage.getItem(BASE + state.periodId) && state.fileText) localStorage.setItem(BASE + state.periodId, state.fileText);
     localStorage.setItem(STORE + state.periodId, JSON.stringify(state.period));
     state.fromLocal = true;
     const el = $('#save-state');
@@ -248,6 +269,7 @@
 
     $('#brand-right').innerHTML = `<a class="btn sm" href="#/">← 전체 보고서</a>`;
     $('#app').innerHTML = `
+      ${state.remoteNewer ? `<div class="update-banner">🔄 <b>레포의 원본 보고서가 갱신되었습니다.</b> 지금 보고 있는 것은 이 브라우저에 저장된 이전 수정본입니다. ${btn('reload-remote', '', '새 원본 불러오기', '브라우저 수정본을 삭제하고 최신 원본을 표시', 'sm primary')} ${btn('export', '', '내 수정본 JSON 저장', '', 'sm')} ${btn('dismiss-update', '', '이번엔 무시', '', 'sm')}</div>` : ''}
       ${state.edit ? `<div class="edit-banner"><b>편집 모드</b> — 텍스트를 클릭해 바로 수정하세요. 변경 내용은 이 브라우저에 자동 저장됩니다. 팀과 공유하려면 <b>JSON 내보내기</b> 후 data/${esc(P.id)}.json 파일을 교체해 커밋하세요.</div>` : ''}
       <div class="topbar"><div class="topbar-in">
         <div class="ptitle"><span class="plabel">${esc(P.label || meta.label)}</span><h1 ${bind('title', 'text', '보고서 제목')}>${esc(P.title || meta.title)}</h1><span class="pdate" ${bind('date', 'text', 'YYYY-MM-DD')}>${esc(P.date || '')}</span></div>
@@ -493,7 +515,7 @@
       try {
         const data = JSON.parse(rd.result);
         if (!data.id || !periodMeta(data.id) || !Array.isArray(data.teams)) throw new Error('OKR 보고서 JSON 형식이 아닙니다.');
-        localStorage.setItem(STORE + data.id, JSON.stringify(data));
+        localStorage.setItem(STORE + data.id, JSON.stringify(data)); localStorage.removeItem(BASE + data.id);
         state.periodId = null; // 강제 재로드
         go(data.id, state.tab && state.tab !== TAB_INTERVIEWS ? state.tab : undefined);
         onRoute();
@@ -510,8 +532,12 @@
       case 'export': exportJson(); return;
       case 'import': $('#file-import').click(); return;
       case 'reset':
-        if (confirm('이 브라우저에 저장된 수정본을 삭제하고 원본 데이터로 되돌립니다. 계속할까요?')) { localStorage.removeItem(STORE + state.periodId); state.periodId = null; onRoute(); }
+        if (confirm('이 브라우저에 저장된 수정본을 삭제하고 원본 데이터로 되돌립니다. 계속할까요?')) { discardLocal(state.periodId); state.periodId = null; onRoute(); }
         return;
+      case 'reload-remote':
+        if (confirm('이 브라우저의 수정본을 삭제하고 레포의 최신 원본을 불러옵니다. 수정본을 남기려면 먼저 "내 수정본 JSON 저장"을 눌러 주세요. 계속할까요?')) { discardLocal(state.periodId); state.periodId = null; onRoute(); }
+        return;
+      case 'dismiss-update': state.remoteNewer = false; break;
       case 'print': window.print(); return;
       case 'lock': state.unlocked = false; break;
       case 'change-pw': changePassword(); return;
