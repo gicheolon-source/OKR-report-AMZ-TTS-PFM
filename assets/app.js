@@ -188,7 +188,7 @@
     };
     const quarters = [1, 2, 3, 4].map((q) => card(`${year}-Q${q}`, `Q${q}`)).join('');
     const months = Array.from({ length: 12 }, (_, i) => card(`${year}-${String(i + 1).padStart(2, '0')}`, `${i + 1}월`)).join('');
-    const teams = (idx.teams || []).map((t) => `<div class="tcard" style="--team:${t.color}"><h3>${esc(t.name)}</h3><ul>${t.members.map((m) => `<li><b>${esc(m.name)}</b><span>${esc(m.scope || m.role || '')}</span></li>`).join('')}</ul></div>`).join('');
+    const teams = (idx.teams || []).map((t) => `<div class="tcard" style="--team:${t.color}"><h3>${esc(t.name)}</h3><ul>${t.members.map((m) => `<li>${avatar(m)}<div><b>${esc(m.name)}</b><span>${esc(m.scope || m.role || '')}</span></div></li>`).join('')}</ul></div>`).join('');
 
     $('#brand-right').innerHTML = '';
     $('#app').innerHTML = `<div class="home">
@@ -205,6 +205,17 @@
   }
   function btn(action, path, label, title = '', cls = '', arg = '') {
     return `<button type="button" class="btn ${cls}" data-action="${action}" data-path="${path}" data-arg="${esc(arg)}" title="${esc(title)}">${label}</button>`;
+  }
+  // 담당자 사진: photo 필드 > assets/people/<이름>.jpg > 이니셜
+  function avatar(m) {
+    const name = m.name || '?';
+    const src = m.photo || `assets/people/${encodeURIComponent(name)}.jpg`;
+    return `<div class="avatar"><span>${esc(name[0])}</span><img src="${esc(src)}" alt="" loading="lazy" onerror="this.remove()"></div>`;
+  }
+  function trendClass(v) {
+    if (/^\s*[▲▴↑+]/.test(v)) return 'up';
+    if (/^\s*[▼▾↓-]/.test(v)) return 'down';
+    return '';
   }
   function statusCell(val, path) {
     if (!state.edit) return badge(val);
@@ -267,10 +278,11 @@
     const chips = `<a data-scroll="top">개요</a>` + groups.map((g) => `<a data-scroll="g-${g.id}">${g.flag || ''} ${esc(g.title)}</a>`).join('');
 
     let main = `<div id="top" class="team-hero"><div class="team-name" ${bind(base + '.name')}>${esc(team.name)}</div><div class="team-cap">담당 구성 · 국가/영역별 담당자</div><div class="members">`
-      + (team.members || []).map((m, i) => `<div class="member"><div class="avatar">${esc((m.name || '?')[0])}</div><div>
+      + (team.members || []).map((m, i) => `<div class="member">${avatar(m)}<div>
           <div class="m-name" ${bind(`${base}.members.${i}.name`, 'text', '이름')}>${esc(m.name)}</div>
           <div class="m-role" ${bind(`${base}.members.${i}.role`, 'text', '역할')}>${esc(m.role)}</div>
-          <div class="m-scope" ${bind(`${base}.members.${i}.scope`, 'text', '담당 국가/영역')}>${esc(m.scope)}</div></div>
+          <div class="m-scope" ${bind(`${base}.members.${i}.scope`, 'text', '담당 국가/영역')}>${esc(m.scope)}</div>
+          ${E ? `<div class="m-photo">사진 URL: <span ${bind(`${base}.members.${i}.photo`, 'text', `assets/people/${m.name}.jpg`)}>${esc(m.photo || '')}</span></div>` : ''}</div>
           ${E ? `<span class="del">${btn('del-member', `${base}.members.${i}`, '×', '삭제', 'icon danger')}</span>` : ''}</div>`).join('')
       + (E ? `<div class="member" style="align-items:center;justify-content:center;background:transparent;border-style:dashed">${btn('add-member', `${base}.members`, '+ 담당자 추가', '', 'ghost')}</div>` : '')
       + `</div></div>`;
@@ -348,7 +360,7 @@
       const isNum = /^[\d.,%$£€+\-\s]+$/.test(v) && /\d/.test(v) && !/[가-힣a-zA-Z]/.test(v) && ci > 0;
       if (badgeCols.has(ci)) return `<td ${bind(`${path}.rows.${ri}.${ci}`)}>${E ? esc(v) : badge(v)}</td>`;
       if (linkCol === ci && !E && sec.links?.[ri]) return `<td><a class="lnk" href="${esc(sec.links[ri])}" target="_blank" rel="noopener">${esc(v)} ↗</a></td>`;
-      return `<td class="${isNum ? 'num' : ''}" ${bind(`${path}.rows.${ri}.${ci}`)}>${esc(v)}</td>`;
+      return `<td class="${isNum ? 'num' : ''} ${trendClass(v)}" ${bind(`${path}.rows.${ri}.${ci}`)}>${esc(v)}</td>`;
     }).join('')}
       ${linkCol !== null && E ? `<td class="url" ${bind(`${path}.links.${ri}`, 'text', 'https://…')}>${esc(sec.links[ri] || '')}</td>` : ''}
       ${E ? `<td class="act">${btn('del-row', `${path}.rows.${ri}`, '×', '행 삭제', 'icon danger')}</td>` : ''}</tr>`).join('');
