@@ -212,6 +212,13 @@
     const src = m.photo || `assets/people/${encodeURIComponent(name)}.jpg`;
     return `<div class="avatar"><span>${esc(name[0])}</span><img src="${esc(src)}" alt="" loading="lazy" onerror="if(!this.dataset.r){this.dataset.r=1;this.src=this.src.replace(/.jpg$/,'.png');}else this.remove();"></div>`;
   }
+  // 목표 달성률 셀: 100% 이상 초록, 50% 미만 빨강
+  function achieveClass(v) {
+    const m = String(v).match(/^\s*(\d+(?:\.\d+)?)\s*%/);
+    if (!m) return '';
+    const n = parseFloat(m[1]);
+    return n >= 100 ? 'up' : n < 50 ? 'down' : '';
+  }
   function trendClass(v) {
     if (/^\s*[▲▴↑+]/.test(v)) return 'up';
     if (/^\s*[▼▾↓-]/.test(v)) return 'down';
@@ -267,6 +274,7 @@
     layout.innerHTML = `<aside class="side">${side}</aside><div class="content"><div class="chips">${chips}</div>${main}</div>`;
   }
 
+  const P_label = () => (state.period && state.period.label) || '';
   function renderTeam(team, ti) {
     const E = state.edit;
     const base = `teams.${ti}`;
@@ -277,7 +285,8 @@
       + groups.map((g) => `<a data-scroll="g-${g.id}">${g.flag || ''} ${esc(g.title)}<small>${esc(g.owner || '')}</small></a>`).join('');
     const chips = `<a data-scroll="top">개요</a>` + groups.map((g) => `<a data-scroll="g-${g.id}">${g.flag || ''} ${esc(g.title)}</a>`).join('');
 
-    let main = `<div id="top" class="team-hero"><div class="team-name" ${bind(base + '.name')}>${esc(team.name)}</div><div class="team-cap">담당 구성 · 국가/영역별 담당자</div><div class="members">`
+    const hasMembers = (team.members || []).length > 0 || E;
+    let main = `<div id="top" class="team-hero"><div class="team-name" ${bind(base + '.name')}>${esc(team.name)}</div>${hasMembers ? `<div class="team-cap">담당 구성 · 국가/영역별 담당자</div><div class="members">` : `<div class="team-cap">${esc(P_label())} · 채널별 매출 현황</div><div class="members" hidden>`}`
       + (team.members || []).map((m, i) => `<div class="member">${avatar(m)}<div>
           <div class="m-name" ${bind(`${base}.members.${i}.name`, 'text', '이름')}>${esc(m.name)}</div>
           <div class="m-role" ${bind(`${base}.members.${i}.role`, 'text', '역할')}>${esc(m.role)}</div>
@@ -355,12 +364,15 @@
     const head = cols.map((c, ci) => `<th ${bind(`${path}.columns.${ci}`, 'text', '열 이름')}>${esc(c)}${E ? `<span class="del-col">${btn('del-col', `${path}.columns.${ci}`, '×', '열 삭제', 'icon danger')}</span>` : ''}</th>`).join('')
       + (linkCol !== null && E ? `<th>링크 URL</th>` : '')
       + (E ? `<th class="act">${btn('add-col', path, '+', '열 추가', 'icon')}</th>` : '');
-    const rows = (sec.rows || []).map((r, ri) => `<tr>${cols.map((_, ci) => {
+    const achieveCols = new Set(sec.achieveCols || []);
+    const boldRows = new Set(sec.boldRows || []);
+    const rows = (sec.rows || []).map((r, ri) => `<tr class="${boldRows.has(ri) ? 'sub' : ''}">${cols.map((_, ci) => {
       const v = r[ci] ?? '';
-      const isNum = /^[\d.,%$£€+\-\s]+$/.test(v) && /\d/.test(v) && !/[가-힣a-zA-Z]/.test(v) && ci > 0;
+      const isNum = /^[\d.,%$£€₩+\-\s]+$/.test(v) && /\d/.test(v) && !/[가-힣a-zA-Z]/.test(v) && ci > 0;
       if (badgeCols.has(ci)) return `<td ${bind(`${path}.rows.${ri}.${ci}`)}>${E ? esc(v) : badge(v)}</td>`;
       if (linkCol === ci && !E && sec.links?.[ri]) return `<td><a class="lnk" href="${esc(sec.links[ri])}" target="_blank" rel="noopener">${esc(v)} ↗</a></td>`;
-      return `<td class="${isNum ? 'num' : ''} ${trendClass(v)}" ${bind(`${path}.rows.${ri}.${ci}`)}>${esc(v)}</td>`;
+      const cls = achieveCols.has(ci) ? achieveClass(v) : trendClass(v);
+      return `<td class="${isNum ? 'num' : ''} ${cls}" ${bind(`${path}.rows.${ri}.${ci}`)}>${esc(v)}</td>`;
     }).join('')}
       ${linkCol !== null && E ? `<td class="url" ${bind(`${path}.links.${ri}`, 'text', 'https://…')}>${esc(sec.links[ri] || '')}</td>` : ''}
       ${E ? `<td class="act">${btn('del-row', `${path}.rows.${ri}`, '×', '행 삭제', 'icon danger')}</td>` : ''}</tr>`).join('');

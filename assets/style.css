@@ -206,6 +206,7 @@ small { color: var(--muted); font-weight: 500; }
 .tbl .act { width: 34px; text-align: right; }
 .tbl th .del-col { position: absolute; top: 4px; right: 4px; }
 .tbl a.lnk { color: #1d4ed8; text-decoration: underline; }
+.tbl tr.sub td { font-weight: 700; background: #f8fafc; }
 .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
 .tbl.compact td { padding: 6px 10px; }
 .dash { color: #d1d5db; }
