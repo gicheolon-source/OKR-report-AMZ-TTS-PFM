@@ -15,17 +15,20 @@
         {
           "name": "김세빈",
           "role": "아마존 파트",
-          "scope": "아마존 미국 · 캐나다 · 자사몰(임시)"
+          "scope": "아마존 미국 · 캐나다 · 자사몰(임시)",
+          "photo": "assets/people/김세빈.png"
         },
         {
           "name": "김선우",
           "role": "아마존 파트",
-          "scope": "영국 · 호주 · 유럽(사이드)"
+          "scope": "영국 · 호주 · 유럽(사이드)",
+          "photo": "assets/people/김선우.png"
         },
         {
           "name": "아말",
           "role": "아마존 파트",
-          "scope": "유럽(메인) · 중동(임시)"
+          "scope": "유럽(메인) · 중동(임시)",
+          "photo": "assets/people/아말.png"
         }
       ],
       "groups": [
@@ -865,22 +868,26 @@
         {
           "name": "임연",
           "role": "틱톡샵 미국 · 시니어 리드",
-          "scope": "US TikTok Shop 총괄"
+          "scope": "US TikTok Shop 총괄",
+          "photo": "assets/people/임연.png"
         },
         {
           "name": "김세원",
           "role": "틱톡샵 미국 · MD + 어필리에이트",
-          "scope": "US Affiliate · 커뮤니티 · TAP"
+          "scope": "US Affiliate · 커뮤니티 · TAP",
+          "photo": "assets/people/김세원.png"
         },
         {
           "name": "왕지윤",
           "role": "틱톡샵 영국 · 시니어 리드",
-          "scope": "UK TikTok Shop 총괄"
+          "scope": "UK TikTok Shop 총괄",
+          "photo": "assets/people/왕지윤.png"
         },
         {
           "name": "이은채",
           "role": "틱톡샵 영국 · MD + 어필리에이트",
-          "scope": "UK Affiliate · MD"
+          "scope": "UK Affiliate · MD",
+          "photo": "assets/people/이은채.png"
         }
       ],
       "groups": [
@@ -1135,27 +1142,32 @@
         {
           "name": "송지현",
           "role": "퍼포먼스 마케터 (시니어)",
-          "scope": ""
+          "scope": "",
+          "photo": "assets/people/송지현.png"
         },
         {
           "name": "변진희",
           "role": "퍼포먼스 마케터 (시니어)",
-          "scope": "배너 · 영상 콘텐츠 기획"
+          "scope": "배너 · 영상 콘텐츠 기획",
+          "photo": "assets/people/변진희.png"
         },
         {
           "name": "김예린",
           "role": "퍼포먼스 마케터",
-          "scope": ""
+          "scope": "",
+          "photo": "assets/people/김예린.png"
         },
         {
           "name": "이채은",
           "role": "퍼포먼스 마케터",
-          "scope": "PBDD 소재 · 국가별 베리에이션"
+          "scope": "PBDD 소재 · 국가별 베리에이션",
+          "photo": "assets/people/이채은.png"
         },
         {
           "name": "권예리",
           "role": "퍼포먼스 마케터",
-          "scope": "약사 촬영 · AI 소재"
+          "scope": "약사 촬영 · AI 소재",
+          "photo": "assets/people/권예리.png"
         }
       ],
       "groups": [

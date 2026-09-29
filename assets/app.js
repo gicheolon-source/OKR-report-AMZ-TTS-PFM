@@ -210,7 +210,7 @@
   function avatar(m) {
     const name = m.name || '?';
     const src = m.photo || `assets/people/${encodeURIComponent(name)}.jpg`;
-    return `<div class="avatar"><span>${esc(name[0])}</span><img src="${esc(src)}" alt="" loading="lazy" onerror="this.remove()"></div>`;
+    return `<div class="avatar"><span>${esc(name[0])}</span><img src="${esc(src)}" alt="" loading="lazy" onerror="if(!this.dataset.r){this.dataset.r=1;this.src=this.src.replace(/.jpg$/,'.png');}else this.remove();"></div>`;
   }
   function trendClass(v) {
     if (/^\s*[▲▴↑+]/.test(v)) return 'up';
