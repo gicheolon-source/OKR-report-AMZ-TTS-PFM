@@ -615,10 +615,10 @@
           "owner": "아말 (임시)"
         },
         {
-          "id": "data",
-          "title": "데이터 운영 (공통)",
-          "flag": "📊",
-          "owner": "오유찬"
+          "id": "cal",
+          "title": "10월 중요 일정 (공통)",
+          "flag": "📅",
+          "owner": "아마존 파트"
         }
       ],
       "sections": [
@@ -901,27 +901,9 @@
           "html": "<p>내용을 입력하세요.</p>"
         },
         {
-          "group": "data",
-          "type": "okr",
-          "title": "OKR (상반기) · 데이터 운영",
-          "objectives": [
-            {
-              "code": "Object 1",
-              "title": "상반기 목표를 입력하세요 (구글시트 OKR 탭 참고)",
-              "krs": [
-                {
-                  "code": "KR 1",
-                  "title": "핵심 결과를 입력하세요",
-                  "initiatives": []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "group": "data",
+          "group": "cal",
           "type": "text",
-          "title": "분기 성과 및 회고 · 데이터 운영 (공통)",
+          "title": "분기 성과 및 회고 · 10월 중요 일정 (공통)",
           "html": "<p>내용을 입력하세요.</p>"
         }
       ]

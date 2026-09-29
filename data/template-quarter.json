@@ -615,10 +615,10 @@
           "owner": "아말 (임시)"
         },
         {
-          "id": "data",
-          "title": "데이터 운영 (공통)",
-          "flag": "📊",
-          "owner": "오유찬"
+          "id": "cal",
+          "title": "10월 중요 일정 (공통)",
+          "flag": "📅",
+          "owner": "아마존 파트"
         }
       ],
       "sections": [
@@ -1393,82 +1393,9 @@
           "html": "<p>내용을 입력하세요.</p>"
         },
         {
-          "group": "data",
-          "type": "okr",
-          "title": "OKR · 데이터 운영",
-          "objectives": [
-            {
-              "code": "Object 8",
-              "title": "감이 아닌 데이터로 운영하는 팀을 만든다",
-              "krs": [
-                {
-                  "code": "KR 1",
-                  "title": "주간 보고 대시보드",
-                  "initiatives": [
-                    {
-                      "code": "",
-                      "title": "주간 보고 대시보드 구축",
-                      "owner": "오유찬",
-                      "period": "7월",
-                      "status": "Done",
-                      "link": "https://rejuall-gl-amz-weekly.vercel.app/",
-                      "note": ""
-                    }
-                  ]
-                },
-                {
-                  "code": "KR 2",
-                  "title": "광고 데이터 분석 대시보드",
-                  "initiatives": [
-                    {
-                      "code": "",
-                      "title": "광고 데이터 분석 대시보드 구축",
-                      "owner": "오유찬",
-                      "period": "8월",
-                      "status": "Not Started",
-                      "link": "",
-                      "note": ""
-                    }
-                  ]
-                },
-                {
-                  "code": "KR 3",
-                  "title": "재고 대시보드",
-                  "initiatives": [
-                    {
-                      "code": "",
-                      "title": "재고 대시보드 구축",
-                      "owner": "오유찬",
-                      "period": "7~8월",
-                      "status": "In Progress",
-                      "link": "https://docs.google.com/spreadsheets/d/1rP3DxG07yDopq8qyR1ilJUrfPY3SW3Fh/edit?gid=923191198#gid=923191198",
-                      "note": ""
-                    }
-                  ]
-                },
-                {
-                  "code": "KR 4",
-                  "title": "AI 이미지 및 영상 소재 비중 Up",
-                  "initiatives": [
-                    {
-                      "code": "",
-                      "title": "AI 이미지·영상 소재 제작 비중 확대",
-                      "owner": "오유찬 · 권예리",
-                      "period": "7~8월",
-                      "status": "In Progress",
-                      "link": "https://app.notion.com/p/3a46b108aaf480999cc3eb5f240e3c1d?v=3a46b108aaf480ab8347000c084af7db",
-                      "note": ""
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "group": "data",
+          "group": "cal",
           "type": "text",
-          "title": "분기 성과 및 회고 · 데이터 운영 (공통)",
+          "title": "분기 성과 및 회고 · 10월 중요 일정 (공통)",
           "html": "<p>내용을 입력하세요.</p>"
         }
       ]
