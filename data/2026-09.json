@@ -2,7 +2,7 @@
   "id": "2026-09",
   "type": "month",
   "label": "2026년 9월",
-  "title": "JSON_TEST_1790732289245",
+  "title": "9월 OKR 월간 결산",
   "subtitle": "아마존 · 틱톡샵 · 퍼포먼스 마케팅",
   "date": "2026-09-30",
   "teams": [
@@ -15,7 +15,7 @@
       "groups": [
         {
           "id": "m9",
-          "title": "FIXED_1790730960138",
+          "title": "2026년 9월 채널별 매출",
           "flag": "📈",
           "owner": "Global MD"
         },
