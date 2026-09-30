@@ -159,6 +159,33 @@
     state.fromLocal = true;
     const el = $('#save-state');
     if (el) { el.className = 'save-state local'; el.textContent = `● 브라우저에 저장됨 ${new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}`; }
+
+    // 자동 서버 저장
+    autoSaveToServer();
+  }
+
+  async function autoSaveToServer() {
+    if (!state.period || !state.periodId) return;
+    try {
+      const response = await fetch('/api/save-okr', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: state.periodId, data: state.period })
+      });
+      if (response.ok) {
+        const result = await response.json();
+        const el = $('#save-state');
+        if (el) {
+          el.className = 'save-state server';
+          el.textContent = `✓ 서버에 저장됨 (GitHub 커밋됨) ${new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}`;
+        }
+        console.log('✅ 서버 저장 완료:', result);
+      } else {
+        console.warn('⚠️ 서버 저장 실패:', response.status);
+      }
+    } catch (err) {
+      console.warn('⚠️ 서버 연결 실패 (로컬 저장은 유지):', err.message);
+    }
   }
   function scheduleSave() { clearTimeout(state.saveTimer); state.saveTimer = setTimeout(save, 300); }
 
